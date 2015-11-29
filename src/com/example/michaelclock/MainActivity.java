@@ -125,7 +125,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			if(!(intent.getStringExtra("message").equals("Finish MainActivity"))){
 				timeView.setText(intent.getStringExtra("message"));
 			}else{
-				timeView.setText("Hello?");
+				timeView.setText("Hello");
 				CLOSEME = 1;
 				activity.finish();
 			}
