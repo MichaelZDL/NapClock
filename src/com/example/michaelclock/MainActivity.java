@@ -8,13 +8,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
+
+import java.io.IOException;
 
 public class MainActivity extends Activity implements OnClickListener {
 
@@ -26,6 +31,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	//requestCode
 	static TextView timeView,changeCountTextMin,changeCountTextSec;
 	public static final int MY_REQUEST_CODE = 10086;
+	public static final int OPEN_FILE_REQUEST_CODE = 10087;
 	public static int SERVICE_OPENED = 0;
 	public static int CLOSEME = 0;
 	private static int count;
@@ -53,13 +59,14 @@ public class MainActivity extends Activity implements OnClickListener {
 		activity = this;
 		findViewById(R.id.cancel_button).setOnClickListener(this);
 		findViewById(R.id.changeTime_button).setOnClickListener(this);
+		findViewById(R.id.openFile).setOnClickListener(this);
 		//在SharedPreference中读取上一次设置
 		SharedPreferences prefGet = getSharedPreferences("countNum",MODE_PRIVATE);
 		int c = prefGet.getInt("lastCountNum",30*60);
 		changeCountTextSec.setText(String.valueOf(c%60));
 		changeCountTextMin.setText(String.valueOf(c/60));
 		//第一次运行时  执行以下内容
-		if(SERVICE_OPENED == 0){
+		if(SERVICE_OPENED == 3){
 			SERVICE_OPENED = 1;
 			
 			//获得设备管理器服务
@@ -95,6 +102,10 @@ public class MainActivity extends Activity implements OnClickListener {
 				finish();
 				android.os.Process.killProcess(android.os.Process.myPid());
 		        break;
+			case R.id.openFile:
+		        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+				startActivityForResult(intent, 10);
+				break;
 			case R.id.changeTime_button:
 				int m,s;
 				if(changeCountTextMin.getText().toString().equals("")){
@@ -161,8 +172,33 @@ public class MainActivity extends Activity implements OnClickListener {
 		} else {
 			getAdminActive();//继续获取权限
 		}
-		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == 10 && requestCode == RESULT_OK){
+			Uri uriSound = data.getData();
+			play(this, uriSound);
+		}
+			super.onActivityResult(requestCode, resultCode, data);
 	}
+
+    private void play(Context context, Uri uri) {
+
+        try {
+            MediaPlayer mp = new MediaPlayer();
+            mp.setDataSource(context, uri);
+            mp.start();
+        } catch (IllegalArgumentException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 	
 	@Override
 	protected void onStart() {

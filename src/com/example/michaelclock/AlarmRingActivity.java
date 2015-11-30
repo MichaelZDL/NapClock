@@ -19,7 +19,7 @@ public class AlarmRingActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		//锁屏状态下显示出来
+	 	//锁屏状态下显示出来
 		setToShowOverLockScreen(getWindow());
 		
 		setContentView(R.layout.activity_alarmring);
