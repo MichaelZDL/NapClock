@@ -32,7 +32,7 @@ public class LongRunningService extends Service {
 			super(millisInFuture, countDownInterval);
 		}
         public void onTick(long millisUntilFinished) {
-        	count=(int) (millisUntilFinished/1000)+1;//ÎªÁË±ÈÈç60Ãëµ¹Êý²»´Ó59¿ªÊ¼
+        	count=(int) (millisUntilFinished/1000)+1;//Îªï¿½Ë±ï¿½ï¿½ï¿½60ï¿½ëµ¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½59ï¿½ï¿½Ê¼
         	muf=Long.toString(millisUntilFinished);
         	if((count / 60)>9){
         		f = Integer.toString(count / 60);	
@@ -60,7 +60,7 @@ public class LongRunningService extends Service {
         	Intent intentT = new Intent("com.example.michaelclock.MY_BROADCAST");
         	intentT.putExtra("message", "Alarm");
 			sendBroadcast(intentT);
-			//¿ªÆôÄÖÖÓÏìÁå»î¶¯
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î¶¯
         	Intent intentNew = new Intent(LongRunningService.this,AlarmRingActivity.class);
         	intentNew.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);  
         	startActivity(intentNew);
@@ -84,10 +84,10 @@ public class LongRunningService extends Service {
     }
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		//ÔÚSharedPreferenceÖÐ¶ÁÈ¡ÉÏÒ»´ÎÉèÖÃ
+		//ï¿½ï¿½SharedPreferenceï¿½Ð¶ï¿½È¡ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		SharedPreferences prefGet = getSharedPreferences("countNum",MODE_PRIVATE);
 		int c = prefGet.getInt("lastCountNum",30*60);
-		//µÚÒ»´ÎÉèÖÃ¶¨Ê±Æ÷£¬¿ªÆô¶¨Ê±
+		//ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Ã¶ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±
 		mc = new MyCountDownTimer(c*1000,1000);
 		mc.start();
 		return super.onStartCommand(intent, flags, startId);

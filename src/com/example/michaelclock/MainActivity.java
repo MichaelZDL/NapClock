@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -18,8 +17,6 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
-
-import java.io.IOException;
 
 public class MainActivity extends Activity implements OnClickListener {
 
@@ -66,7 +63,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		changeCountTextSec.setText(String.valueOf(c%60));
 		changeCountTextMin.setText(String.valueOf(c/60));
 		//第一次运行时  执行以下内容
-		if(SERVICE_OPENED == 3){
+		if(SERVICE_OPENED == 0){
 			SERVICE_OPENED = 1;
 			
 			//获得设备管理器服务
@@ -104,7 +101,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		        break;
 			case R.id.openFile:
 		        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
-				startActivityForResult(intent, 10);
+				startActivityForResult(intent, OPEN_FILE_REQUEST_CODE);
 				break;
 			case R.id.changeTime_button:
 				int m,s;
@@ -161,7 +158,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		
 		 //获取权限成功，锁屏并finish()，否则继续获取权限
-		if (requestCode == MY_REQUEST_CODE && requestCode == Activity.RESULT_OK){
+		if (requestCode == MY_REQUEST_CODE && resultCode == RESULT_OK){
 			Intent intent = new Intent(this, LongRunningService.class);
 			startService(intent);
 			// 绑定服务
@@ -169,37 +166,20 @@ public class MainActivity extends Activity implements OnClickListener {
 			bindService(bindIntent, connection, BIND_AUTO_CREATE);
 			//锁屏
 			mPolicyManager.lockNow();
-		} else {
+		} else if (requestCode == MY_REQUEST_CODE){
 			getAdminActive();//继续获取权限
 		}
-		if (requestCode == 10 && requestCode == RESULT_OK){
+
+		if (requestCode == OPEN_FILE_REQUEST_CODE && resultCode == RESULT_OK){
 			Uri uriSound = data.getData();
-			play(this, uriSound);
+			//存入SharedPreference中
+			SharedPreferences.Editor editor = getSharedPreferences("musicUri",MODE_PRIVATE).edit();
+			editor.putString("alarmingMusicUri", uriSound.toString());
+			editor.commit();
 		}
 			super.onActivityResult(requestCode, resultCode, data);
 	}
 
-    private void play(Context context, Uri uri) {
-
-        try {
-            MediaPlayer mp = new MediaPlayer();
-            mp.setDataSource(context, uri);
-            mp.start();
-        } catch (IllegalArgumentException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalStateException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-	
 	@Override
 	protected void onStart() {
 		super.onStart();

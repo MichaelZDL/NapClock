@@ -2,7 +2,9 @@ package com.example.michaelclock;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.KeyEvent;
@@ -11,9 +13,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 
+import java.io.IOException;
+import java.net.URI;
+
 public class AlarmRingActivity extends Activity implements OnClickListener {
 
 	private MediaPlayer mediaPlayer;
+	Uri uriSound;
 	private Vibrator vibrator;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -21,14 +27,26 @@ public class AlarmRingActivity extends Activity implements OnClickListener {
 		
 	 	//À¯∆¡◊¥Ã¨œ¬œ‘ æ≥ˆ¿¥
 		setToShowOverLockScreen(getWindow());
-		
 		setContentView(R.layout.activity_alarmring);
-
 		//∑≈ƒ÷÷”“Ù¿÷
+		SharedPreferences prefGet = getSharedPreferences("musicUri", MODE_PRIVATE);
+		uriSound = Uri.parse(prefGet.getString("alarmingMusicUri", null));
+
 		try {
-			mediaPlayer = MediaPlayer.create(AlarmRingActivity.this, R.raw.music);
+			mediaPlayer = new MediaPlayer();
+			mediaPlayer.setDataSource(this, uriSound);
 			mediaPlayer.prepare();
-		} catch (Exception e) {
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
