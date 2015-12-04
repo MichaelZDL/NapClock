@@ -14,9 +14,11 @@ import android.os.IBinder;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnClickListener {
 
@@ -104,6 +106,11 @@ public class MainActivity extends Activity implements OnClickListener {
 				startActivityForResult(intent, OPEN_FILE_REQUEST_CODE);
 				break;
 			case R.id.changeTime_button:
+                //close IME when button done
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
 				int m,s;
 				if(changeCountTextMin.getText().toString().equals("")){
 					m = 0;
@@ -117,11 +124,16 @@ public class MainActivity extends Activity implements OnClickListener {
 					s = Integer.parseInt(changeCountTextSec.getText().toString());
 				}
 				count = s + m * 60;
-				//存入SharedPreference中
-				SharedPreferences.Editor editor = getSharedPreferences("countNum",MODE_PRIVATE).edit();
-				editor.putInt("lastCountNum", count);
-				editor.commit();
-				changeCountBinder.changeCount(count);
+                if(count >10){
+                    //存入SharedPreference中
+                    SharedPreferences.Editor editor = getSharedPreferences("countNum",MODE_PRIVATE).edit();
+                    editor.putInt("lastCountNum", count);
+                    editor.commit();
+                    changeCountBinder.changeCount(count);
+                }else{
+                    Toast.makeText(getApplicationContext(), "Over 10s is required", Toast.LENGTH_LONG).show();
+                }
+
 				break;
 			default:break;
 		}

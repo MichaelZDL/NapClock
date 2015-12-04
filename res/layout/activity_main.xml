@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:text="New Button"
             android:id="@+id/changeTime_button"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_vertical"/>
 
         <EditText
             android:layout_weight="0.25"
@@ -27,7 +27,8 @@
             android:id="@+id/changeCountMin"
             android:layout_gravity="center_vertical"
             android:inputType="number"
-            android:hint="分" />
+            android:hint="minute"
+            android:maxLength="3"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -43,7 +44,8 @@
             android:id="@+id/changeCountSec"
             android:layout_gravity="center_vertical"
             android:inputType="number"
-            android:hint="秒" />
+            android:hint="second"
+            android:maxLength="3" />
 
     </LinearLayout>
 
@@ -65,7 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="30dp"
-            android:textSize="100sp"
+            android:textSize="90sp"
             android:textColor="#FF0000"
             android:textStyle="bold" />
 
