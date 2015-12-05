@@ -24,9 +24,9 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnClickListener {
 
-	//ï¿½è±¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    //Éè±¸¹ÜÀíÆ÷
 	DevicePolicyManager mPolicyManager;
-	//ComponentNameï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½Ã³ï¿½ï¿½ï¿½ï¿½Ðµï¿½Activityï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    //ComponentName£¨×é¼þÃû³Æ£©ÊÇÓÃÀ´´ò¿ªÆäËûÓ¦ÓÃ³ÌÐòÖÐµÄActivity»ò·þÎñµÄ
 	ComponentName componentName;
 	static Activity activity;
 	//requestCode
@@ -62,7 +62,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		findViewById(R.id.cancel_button).setOnClickListener(this);
 		findViewById(R.id.changeTime_button).setOnClickListener(this);
 		findViewById(R.id.openFile).setOnClickListener(this);
-		//ï¿½ï¿½SharedPreferenceï¿½Ð¶ï¿½È¡ï¿½ï¿½Ò»ï¿½ï¿½countNumï¿½ï¿½ï¿½ï¿½
+        //ÔÚSharedPreferenceÖÐ¶ÁÈ¡ÉÏÒ»´ÎÉèÖÃ
 		SharedPreferences prefGet = getSharedPreferences("countNum",MODE_PRIVATE);
 		int c = prefGet.getInt("lastCountNum",30*60);
 		changeCountTextSec.setText(String.valueOf(c%60));
@@ -90,43 +90,43 @@ public class MainActivity extends Activity implements OnClickListener {
             }while(tempCursor.moveToNext());
             songInfo.setText(song_title + " - " + song_artist);
         }else {
-            songInfo.setText("æ–‘é©¬,æ–‘é©¬ (Live) - å¼ å©§æ‡¿");
+            songInfo.setText("æ–‘é©¬,æ–‘é©¬ (Live) - å¼ å©§æ‡?");
         }
 
-        //ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±  Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        //µÚÒ»´ÎÔËÐÐÊ±  Ö´ÐÐÒÔÏÂÄÚÈÝ
 		if(SERVICE_OPENED == 0){
 			SERVICE_OPENED = 1;
 			
-			//ï¿½ï¿½ï¿½ï¿½è±¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			//»ñµÃÉè±¸¹ÜÀíÆ÷·þÎñ
 			mPolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
 			
-			//ï¿½ï¿½ï¿½ï¿½ï¿½MyReceiverï¿½ï¿½DeviceAdminReceiverï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			//ÕâÀïµÄMyReceiverÊÇDeviceAdminReceiverµÄ×ÓÀà
 			componentName = new ComponentName(this, MyReceiver.class);
-			
-			//ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½Ç·ï¿½ß±ï¿½ï¿½ï¿½ï¿½ï¿½È¨ï¿½Þ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ï¿½Ö´ï¿½ï¿½lockNow()ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½finish()ï¿½ï¿½Ç°Activity
-			//ï¿½ï¿½×°ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ÒªÈ¥ï¿½ï¿½ï¿½È¨ï¿½ï¿½
+
+            //ÏÈÅÐ¶ÏÊÇ·ñ¾ß±¸ËøÆÁÈ¨ÏÞ£¬Èç¹û¾ßÓÐ£¬ÔòÖ´ÐÐlockNow()·½·¨ËøÆÁ²¢finish()µ±Ç°Activity
+            //°²×°ºóµÚÒ»´ÎÔËÐÐ¶¼ÒªÈ¥»ñµÃÈ¨ÏÞ
 			if (mPolicyManager.isAdminActive(componentName)){
 				Intent intent = new Intent(this, LongRunningService.class);
 				startService(intent);
-				// ï¿½ó¶¨·ï¿½ï¿½ï¿½
+                // °ó¶¨·þÎñ
 				Intent bindIntent = new Intent(this, LongRunningService.class);
 				bindService(bindIntent, connection, BIND_AUTO_CREATE);
-				//ï¿½ï¿½ï¿½ï¿½
+				//ËøÆÁ
 				mPolicyManager.lockNow();
 			} else {
-				getAdminActive();//ï¿½ï¿½È¡È¨ï¿½ï¿½
+				getAdminActive();//»ñÈ¡È¨ÏÞ
 			}
 		}
 	}
 	
-	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	//¼àÌý°´¼ü
 	@Override
 	public void     onClick(View arg0) {
 		switch(arg0.getId()){
 			case R.id.cancel_button:
 				Intent stopIntent = new Intent(this, LongRunningService.class);
-				unbindService(connection); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-				stopService(stopIntent); // Í£Ö¹ï¿½ï¿½ï¿½ï¿½
+				unbindService(connection); // ½â°ó·þÎñ
+				stopService(stopIntent); // Í£Ö¹·þÎñ
 				finish();
 				android.os.Process.killProcess(android.os.Process.myPid());
 		        break;
@@ -155,7 +155,7 @@ public class MainActivity extends Activity implements OnClickListener {
 				}
 				count = s + m * 60;
                 if(count >10){
-                    //ï¿½ï¿½ï¿½ï¿½SharedPreferenceï¿½ï¿½
+                    //´æÈëSharedPreferenceÖÐ
                     SharedPreferences.Editor editor = getSharedPreferences("countNum",MODE_PRIVATE).edit();
                     editor.putInt("lastCountNum", count);
                     editor.commit();
@@ -183,15 +183,15 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	/**
-	 * ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½
+	 * »ñÈ¡ËøÆÁÈ¨ÏÞ
 	 */
 	private void getAdminActive() {
 
-		// ï¿½ï¿½ï¿½ï¿½ï¿½è±¸ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½Ê½Intent) - ï¿½ï¿½AndroidManifest.xmlï¿½ï¿½ï¿½è¶¨ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//Æô¶¯Éè±¸¹ÜÀí(ÒþÊ½Intent) - ÔÚAndroidManifest.xmlÖÐÉè¶¨ÏàÓ¦¹ýÂËÆ÷
 		Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-		//È¨ï¿½ï¿½ï¿½Ð±ï¿½
+		//È¨ÏÞÁÐ±í
 		intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, componentName);
-		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÒªÈ¨ï¿½Þ¼ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Ô¿ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//Ìí¼ÓÃèÊö£¬ÔÚµÚÒ»´ÎÆô¶¯ÐèÒªÈ¨ÏÞ¼¤»îÊ±£¬¿ÉÒÔ¿´µ½×Ô¶¨ÒåµÄÃèÊö
 		intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î¡±ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ =]");
 		startActivityForResult(intent, MY_REQUEST_CODE);
 	}
@@ -199,17 +199,17 @@ public class MainActivity extends Activity implements OnClickListener {
     @Override
     protected void  onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        //ï¿½ï¿½È¡È¨ï¿½Þ³É¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½finish()ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡È¨ï¿½ï¿½
+        //»ñÈ¡È¨ÏÞ³É¹¦£¬ËøÆÁ²¢finish()£¬·ñÔò¼ÌÐø»ñÈ¡È¨ÏÞ
         if (requestCode == MY_REQUEST_CODE && resultCode == RESULT_OK){
             Intent intent = new Intent(this, LongRunningService.class);
             startService(intent);
-            // ï¿½ó¶¨·ï¿½ï¿½ï¿½
+            // °ó¶¨·þÎñ
             Intent bindIntent = new Intent(this, LongRunningService.class);
             bindService(bindIntent, connection, BIND_AUTO_CREATE);
-            //ï¿½ï¿½ï¿½ï¿½
+            //ËøÆÁ
             mPolicyManager.lockNow();
         } else if (requestCode == MY_REQUEST_CODE){
-            getAdminActive();//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡È¨ï¿½ï¿½
+            getAdminActive();//¼ÌÐø»ñÈ¡È¨ÏÞ
         }
 
         if (requestCode == OPEN_FILE_REQUEST_CODE && resultCode == RESULT_OK){
@@ -233,7 +233,7 @@ public class MainActivity extends Activity implements OnClickListener {
             }while(tempCursor.moveToNext());
 
             songInfo.setText(song_title + " - " + song_artist);
-            //ï¿½ï¿½ï¿½ï¿½SharedPreferenceï¿½ï¿½
+            //´æÈëSharedPreferenceÖÐ
             SharedPreferences.Editor editor = getSharedPreferences("musicUri",MODE_PRIVATE).edit();
             editor.putString("alarmingMusicUri", uriSound.toString());
             editor.commit();
