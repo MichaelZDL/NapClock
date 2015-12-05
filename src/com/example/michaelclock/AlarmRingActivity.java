@@ -14,7 +14,6 @@ import android.view.WindowManager;
 import android.view.View.OnClickListener;
 
 import java.io.IOException;
-import java.net.URI;
 
 public class AlarmRingActivity extends Activity implements OnClickListener {
 
@@ -30,7 +29,7 @@ public class AlarmRingActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_alarmring);
 		//∑≈ƒ÷÷”“Ù¿÷
 		SharedPreferences prefGet = getSharedPreferences("musicUri", MODE_PRIVATE);
-		uriSound = Uri.parse(prefGet.getString("alarmingMusicUri", null));
+		uriSound = Uri.parse(prefGet.getString("alarmingMusicUri", "android.resource://com.example.michaelclock/raw/music"));
 
 		try {
 			mediaPlayer = new MediaPlayer();
