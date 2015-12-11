@@ -1,5 +1,4 @@
 package com.example.michaelclock;
-
 import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
@@ -22,13 +21,12 @@ import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnClickListener {
-
-    //�豸������
+    //preparation of locking screen
 	DevicePolicyManager mPolicyManager;
-    //ComponentName��������ƣ�������������Ӧ�ó����е�Activity������
 	ComponentName componentName;
+    //for static MyBroadcastReceiver
 	static Activity activity;
-	//requestCode
+
 	static TextView timeView, songInfo,changeCountTextMin,changeCountTextSec;
 	public static final int MY_REQUEST_CODE = 10086;
 	public static final int OPEN_FILE_REQUEST_CODE = 10087;
@@ -37,12 +35,12 @@ public class MainActivity extends Activity implements OnClickListener {
 	private static int count;
 	private static LongRunningService.ChangeCountBinder changeCountBinder;
     String  song_title, song_artist;
+
 	protected ServiceConnection connection = new ServiceConnection() {
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
 		}
-
-		@Override
+        @Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			changeCountBinder = (LongRunningService.ChangeCountBinder) service;
 		}
@@ -61,7 +59,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		findViewById(R.id.cancel_button).setOnClickListener(this);
 		findViewById(R.id.changeTime_button).setOnClickListener(this);
 		findViewById(R.id.openFile).setOnClickListener(this);
-        //��SharedPreference�ж�ȡ��һ������
+        //SharedPreference
 		SharedPreferences prefGet = getSharedPreferences("countNum",MODE_PRIVATE);
 		int c = prefGet.getInt("lastCountNum",30*60);
 		changeCountTextSec.setText(String.valueOf(c%60));
@@ -69,6 +67,7 @@ public class MainActivity extends Activity implements OnClickListener {
         //read last songInfo in SharedPreference
         SharedPreferences prefGetMusic = getSharedPreferences("musicUri", MODE_PRIVATE);
         String uriSoundString = prefGetMusic.getString("alarmingMusicUri", null);
+
         if(uriSoundString != null){
             Uri uriSound = Uri.parse(uriSoundString);
             String[] proJ = {MediaStore.Audio.Media._ID,
@@ -83,54 +82,47 @@ public class MainActivity extends Activity implements OnClickListener {
                 song_title = tempCursor.getString(col_index);
                 col_index = tempCursor.getColumnIndexOrThrow(MediaStore.Audio.Artists.ARTIST);
                 song_artist = tempCursor.getString(col_index);
-                //do something with artist name here
-                //we can also move into different columns to fetch the other values
-
             }while(tempCursor.moveToNext());
             songInfo.setText(song_title + " - " + song_artist);
         }else {
             songInfo.setText("斑马,斑马 (Live) - 张婧");
         }
-
-        //��һ������ʱ  ִ����������
+        //start countDownTimer and lock screen only in first start this app
 		if(SERVICE_OPENED == 0){
 			SERVICE_OPENED = 1;
-			
-			//����豸����������
+			//for lock screen
 			mPolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-			
-			//�����MyReceiver��DeviceAdminReceiver������
 			componentName = new ComponentName(this, MyReceiver.class);
-
-            //���ж��Ƿ�߱�����Ȩ�ޣ�������У���ִ��lockNow()����������finish()��ǰActivity
-            //��װ���һ�����ж�Ҫȥ���Ȩ��
+            //check lock screen admission
 			if (mPolicyManager.isAdminActive(componentName)){
-				Intent intent = new Intent(this, LongRunningService.class);
+
+                Intent intent = new Intent(this, LongRunningService.class);
 				startService(intent);
-                // �󶨷���
-				Intent bindIntent = new Intent(this, LongRunningService.class);
+                Intent bindIntent = new Intent(this, LongRunningService.class);
 				bindService(bindIntent, connection, BIND_AUTO_CREATE);
-				//����
+				//lock screen
 				mPolicyManager.lockNow();
+
 			} else {
-				getAdminActive();//��ȡȨ��
+				getAdminActive();//if no admission, get it
 			}
 		}
 	}
 	
-	//��������
+	//onClick all buttons
 	@Override
-	public void     onClick(View arg0) {
+	public void onClick(View arg0) {
 		switch(arg0.getId()){
 			case R.id.cancel_button:
 				Intent stopIntent = new Intent(this, LongRunningService.class);
-				unbindService(connection); // ������
-				stopService(stopIntent); // ֹͣ����
+				unbindService(connection); // unbindService if bound
+				stopService(stopIntent);
 				finish();
 				android.os.Process.killProcess(android.os.Process.myPid());
 		        break;
 			case R.id.openFile:
-		        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+		        Intent intent = new Intent(Intent.ACTION_PICK,
+                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
 				startActivityForResult(intent, OPEN_FILE_REQUEST_CODE);
 				break;
 			case R.id.changeTime_button:
@@ -154,21 +146,23 @@ public class MainActivity extends Activity implements OnClickListener {
 				}
 				count = s + m * 60;
                 if(count >10){
-                    //����SharedPreference��
-                    SharedPreferences.Editor editor = getSharedPreferences("countNum",MODE_PRIVATE).edit();
+                    //save new setting of countNum in SharedPreference
+                    SharedPreferences.Editor editor =
+                            getSharedPreferences("countNum",MODE_PRIVATE).edit();
                     editor.putInt("lastCountNum", count);
                     editor.commit();
+
                     changeCountBinder.changeCount(count);
                 }else{
-                    Toast.makeText(getApplicationContext(), "Over 10s is required", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),
+                            "Over 10s is required", Toast.LENGTH_LONG).show();
                 }
-
 				break;
 			default:break;
 		}
 	}
-	public static class MyBroadcastReceiver extends BroadcastReceiver {
 
+	public static class MyBroadcastReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if(!(intent.getStringExtra("message").equals("Finish MainActivity"))){
@@ -181,36 +175,25 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	/**
-	 * ��ȡ����Ȩ��
-	 */
 	private void getAdminActive() {
-
-		//�����豸����(��ʽIntent) - ��AndroidManifest.xml���趨��Ӧ������
 		Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-		//Ȩ���б�
 		intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, componentName);
-		//����������ڵ�һ��������ҪȨ�޼���ʱ�����Կ����Զ��������
-		intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "�������������ʹ���������� =]");
+		intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                "Your admission is required to lock screen for more convenient =]");
 		startActivityForResult(intent, MY_REQUEST_CODE);
 	}
 
     @Override
     protected void  onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        //��ȡȨ�޳ɹ���������finish()�����������ȡȨ��
         if (requestCode == MY_REQUEST_CODE && resultCode == RESULT_OK){
             Intent intent = new Intent(this, LongRunningService.class);
             startService(intent);
-            // �󶨷���
             Intent bindIntent = new Intent(this, LongRunningService.class);
             bindService(bindIntent, connection, BIND_AUTO_CREATE);
-            //����
             mPolicyManager.lockNow();
         } else if (requestCode == MY_REQUEST_CODE){
-            getAdminActive();//������ȡȨ��
+            getAdminActive();
         }
-
         if (requestCode == OPEN_FILE_REQUEST_CODE && resultCode == RESULT_OK){
             Uri uriSound = data.getData();
             String[] proJ = {MediaStore.Audio.Media._ID,
@@ -226,13 +209,9 @@ public class MainActivity extends Activity implements OnClickListener {
                 song_title = tempCursor.getString(col_index);
                 col_index = tempCursor.getColumnIndexOrThrow(MediaStore.Audio.Artists.ARTIST);
                 song_artist = tempCursor.getString(col_index);
-                //do something with artist name here
-                //we can also move into different columns to fetch the other values
-
             }while(tempCursor.moveToNext());
-
             songInfo.setText(song_title + " - " + song_artist);
-            //����SharedPreference��
+            //save the new choice of alarming song in SharedPreference
             SharedPreferences.Editor editor = getSharedPreferences("musicUri",MODE_PRIVATE).edit();
             editor.putString("alarmingMusicUri", uriSound.toString());
             editor.commit();
@@ -241,36 +220,11 @@ public class MainActivity extends Activity implements OnClickListener {
     }
 
 	@Override
-	protected void onStart() {
-		super.onStart();
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
-	
-	@Override
-	protected void onPause() {
-		super.onPause();
-	}
-	
-	@Override
-	protected void onStop() {
-		super.onStop();
-	}
-	
-	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		if(CLOSEME == 1){
 			unbindService(connection);
 			android.os.Process.killProcess(android.os.Process.myPid());
 		}
-	}
-
-	@Override
-	protected void onRestart() {
-		super.onRestart();
 	}
 }

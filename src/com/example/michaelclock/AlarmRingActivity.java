@@ -1,5 +1,4 @@
 package com.example.michaelclock;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,25 +11,22 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
-
 import java.io.IOException;
 
 public class AlarmRingActivity extends Activity implements OnClickListener {
-
 	private MediaPlayer mediaPlayer;
 	Uri uriSound;
 	private Vibrator vibrator;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-	 	//锁屏状态下显示出来
+	 	//wake up the screen when alarming
 		setToShowOverLockScreen(getWindow());
 		setContentView(R.layout.activity_alarmring);
-		//放闹钟音乐
+		//play the music
 		SharedPreferences prefGet = getSharedPreferences("musicUri", MODE_PRIVATE);
-		uriSound = Uri.parse(prefGet.getString("alarmingMusicUri", "android.resource://com.example.michaelclock/raw/music"));
-
+		uriSound = Uri.parse(prefGet.getString("alarmingMusicUri",
+                "android.resource://com.example.michaelclock/raw/music"));
 		try {
 			mediaPlayer = new MediaPlayer();
 			mediaPlayer.setDataSource(this, uriSound);
@@ -48,21 +44,18 @@ public class AlarmRingActivity extends Activity implements OnClickListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		if (!mediaPlayer.isPlaying()) {
 			mediaPlayer.start();
 		}
-		 /* 
-         * 想设置震动大小可以通过改变pattern来设定，如果开启时间太短，震动效果可能感觉不到 
-         * */  
-        vibrator = (Vibrator)getSystemService(VIBRATOR_SERVICE);  
-        long [] pattern = {500,500,500,500};   // 停止 开启 停止 开启   
-        vibrator.vibrate(pattern,2);           //重复两次上面的pattern 如果只想震动一次，index设为-1   
+
+        vibrator = (Vibrator)getSystemService(VIBRATOR_SERVICE);
+        long [] pattern = {500,500,500,500};   // start stop start stop
+        //vibrate repeat 2 times, if only 1 time is needed, set index -1
+        vibrator.vibrate(pattern,2);
         
 		findViewById(R.id.close_button).setOnClickListener(this);
 	}
 	
-	//监听按键
 	@Override
 	 public void onClick(View arg0) {
 		switch(arg0.getId()){
@@ -70,7 +63,7 @@ public class AlarmRingActivity extends Activity implements OnClickListener {
 				mediaPlayer.reset();
 				vibrator.cancel();
 				Intent stopIntent = new Intent(this, LongRunningService.class);
-				stopService(stopIntent); // 停止服务
+				stopService(stopIntent);
 				Intent intentT = new Intent("com.example.michaelclock.MY_BROADCAST");
 	        	intentT.putExtra("message", "Finish MainActivity");
 				sendBroadcast(intentT);
@@ -80,13 +73,13 @@ public class AlarmRingActivity extends Activity implements OnClickListener {
 		}
 	}
 	
-	@Override//重写返回键
+	@Override//override back button on phone
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (KeyEvent.KEYCODE_BACK == keyCode){	 
 			mediaPlayer.reset();
 			vibrator.cancel();
 			Intent stopIntent = new Intent(this, LongRunningService.class);
-			stopService(stopIntent); // 停止服务
+			stopService(stopIntent);
 			Intent intentT = new Intent("com.example.michaelclock.MY_BROADCAST");
         	intentT.putExtra("message", "Finish MainActivity");
 			sendBroadcast(intentT);
@@ -95,7 +88,6 @@ public class AlarmRingActivity extends Activity implements OnClickListener {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-	
 	private void setToShowOverLockScreen(Window win) {
         win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                 | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);

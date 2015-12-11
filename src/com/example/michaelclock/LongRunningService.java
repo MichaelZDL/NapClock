@@ -32,7 +32,9 @@ public class LongRunningService extends Service {
 			super(millisInFuture, countDownInterval);
 		}
         public void onTick(long millisUntilFinished) {
-        	count=(int) (millisUntilFinished/1000)+1;//Ϊ�˱���60�뵹������59��ʼ
+            //get rid of start at the Num which has 1 short
+            //eg. we set 1000, it start at 999. No, We want it stat at 1000.
+        	count=(int) (millisUntilFinished/1000)+1;
         	muf=Long.toString(millisUntilFinished);
         	if((count / 60)>9){
         		f = Integer.toString(count / 60);	
@@ -60,9 +62,10 @@ public class LongRunningService extends Service {
         	Intent intentT = new Intent("com.example.michaelclock.MY_BROADCAST");
         	intentT.putExtra("message", "Alarm");
 			sendBroadcast(intentT);
-			//������������
+            //against from killed by Android System, but it seems no use
         	Intent intentNew = new Intent(LongRunningService.this,AlarmRingActivity.class);
-        	intentNew.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);  
+        	intentNew.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                    Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         	startActivity(intentNew);
         }  
     }
@@ -70,7 +73,8 @@ public class LongRunningService extends Service {
     @Override
     public void onCreate() {
 	    super.onCreate();
-	    Notification notification = new Notification(R.drawable.ic_launcher,"Notification comes", System. currentTimeMillis());
+	    Notification notification = new Notification(R.drawable.ic_launcher,
+                "Notification comes", System. currentTimeMillis());
 	    Intent notificationIntent = new Intent(this, MainActivity.class);
 	    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,notificationIntent, 0);
 	    notification.setLatestEventInfo(this, "This is title", "This is content", pendingIntent);
@@ -84,10 +88,11 @@ public class LongRunningService extends Service {
     }
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		//��SharedPreference�ж�ȡ��һ������
+		//when service first start, we get countNum from SharedPreference we set,
+        //if nothing there,we set 30 minutes
 		SharedPreferences prefGet = getSharedPreferences("countNum",MODE_PRIVATE);
 		int c = prefGet.getInt("lastCountNum",30*60);
-		//��һ�����ö�ʱ����������ʱ
+		//start countDownTimer
 		mc = new MyCountDownTimer(c*1000,1000);
 		mc.start();
 		return super.onStartCommand(intent, flags, startId);

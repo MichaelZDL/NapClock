@@ -41,7 +41,6 @@
         <service android:name=".LongRunningService" >
 		</service>
 
-        <!--注册MyReceiver的内容 -->
         <receiver
             android:name=".MyReceiver"
             android:description="@string/app_name"
@@ -49,7 +48,7 @@
             android:permission="android.permission.BIND_DEVICE_ADMIN" >
             <meta-data
                 android:name="android.app.device_admin"
-                android:resource="@layout/my_lock_screen"/> <!--刚才说的需要导入的文件名 -->
+                android:resource="@layout/my_lock_screen"/>
 
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
