@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
@@ -62,8 +63,18 @@ public class MainActivity extends Activity implements OnClickListener {
         //SharedPreference
 		SharedPreferences prefGet = getSharedPreferences("countNum",MODE_PRIVATE);
 		int c = prefGet.getInt("lastCountNum",30*60);
-		changeCountTextSec.setText(String.valueOf(c%60));
-		changeCountTextMin.setText(String.valueOf(c/60));
+        if(c < 60039){
+            if((c/60)<10){
+                changeCountTextMin.setText("0"+String.valueOf(c/60));
+            }else{
+                changeCountTextMin.setText(String.valueOf(c/60));
+            }
+            if((c%60)<10){
+                changeCountTextSec.setText("0"+String.valueOf(c%60));
+            }else {
+                changeCountTextSec.setText(String.valueOf(c%60));
+            }
+        }
         //read last songInfo in SharedPreference
         SharedPreferences prefGetMusic = getSharedPreferences("musicUri", MODE_PRIVATE);
         String uriSoundString = prefGetMusic.getString("alarmingMusicUri", null);
@@ -83,9 +94,9 @@ public class MainActivity extends Activity implements OnClickListener {
                 col_index = tempCursor.getColumnIndexOrThrow(MediaStore.Audio.Artists.ARTIST);
                 song_artist = tempCursor.getString(col_index);
             }while(tempCursor.moveToNext());
-            songInfo.setText(song_title + " - " + song_artist);
+            songInfo.setText(song_title + "\n" + song_artist);
         }else {
-            songInfo.setText("斑马,斑马 (Live) - 张婧");
+            songInfo.setText("斑马,斑马 (Live)\n张婧");
         }
         //start countDownTimer and lock screen only in first start this app
 		if(SERVICE_OPENED == 0){
@@ -145,7 +156,7 @@ public class MainActivity extends Activity implements OnClickListener {
 					s = Integer.parseInt(changeCountTextSec.getText().toString());
 				}
 				count = s + m * 60;
-                if(count >10){
+                if((count >10 )&&(count <60000)){
                     //save new setting of countNum in SharedPreference
                     SharedPreferences.Editor editor =
                             getSharedPreferences("countNum",MODE_PRIVATE).edit();
@@ -153,9 +164,10 @@ public class MainActivity extends Activity implements OnClickListener {
                     editor.commit();
 
                     changeCountBinder.changeCount(count);
+                    Log.d("changedCountIs", Integer.toString(count));
                 }else{
                     Toast.makeText(getApplicationContext(),
-                            "Over 10s is required", Toast.LENGTH_LONG).show();
+                            "Over 10s and under 60000s is required", Toast.LENGTH_LONG).show();
                 }
 				break;
 			default:break;
@@ -210,7 +222,7 @@ public class MainActivity extends Activity implements OnClickListener {
                 col_index = tempCursor.getColumnIndexOrThrow(MediaStore.Audio.Artists.ARTIST);
                 song_artist = tempCursor.getString(col_index);
             }while(tempCursor.moveToNext());
-            songInfo.setText(song_title + " - " + song_artist);
+            songInfo.setText(song_title + "\n" + song_artist);
             //save the new choice of alarming song in SharedPreference
             SharedPreferences.Editor editor = getSharedPreferences("musicUri",MODE_PRIVATE).edit();
             editor.putString("alarmingMusicUri", uriSound.toString());

@@ -31,31 +31,36 @@ public class LongRunningService extends Service {
 		public MyCountDownTimer(long millisInFuture, long countDownInterval) {
 			super(millisInFuture, countDownInterval);
 		}
-        public void onTick(long millisUntilFinished) {
-            //get rid of start at the Num which has 1 short
-            //eg. we set 1000, it start at 999. No, We want it stat at 1000.
-        	count=(int) (millisUntilFinished/1000)+1;
-        	muf=Long.toString(millisUntilFinished);
-        	if((count / 60)>9){
-        		f = Integer.toString(count / 60);	
-        	}else{
-        		f = "0"+Integer.toString(count / 60);
-        	}
-        	
-        	if((count % 60)>9){
-        		m = Integer.toString(count % 60);	
-        	}else{
-        		m = "0"+Integer.toString(count % 60);
-        	}
-        	
-        	Log.d("millisUntilFinished",muf);
-        	Log.d("countdowntimer", "executed at " + new Date().toString());	
-        	Log.d("countdowntimer", "s=" + f+":"+m);
-        	Intent intentT = new Intent("com.example.michaelclock.MY_BROADCAST");
-        	
-        	intentT.putExtra("message", f+":"+m);
-			sendBroadcast(intentT);
-        }  
+    public void onTick(long millisUntilFinished) {
+        //"count=()+1" for get rid of starting at the Num which has 1 short
+        //eg. we set 1000, it may start at 999. No, We want it stat at 1000.
+
+        //"millisUntilFinished-1" for sometimes millisUntilFinished will be 18000000,
+        //but mostly be 1799****, it will cause count not stable.
+        //So "millisUntilFinished-1", making millisUntilFinished equals 1799**** every time
+        count=(int) ((millisUntilFinished-1)/1000)+1;
+
+        muf=Long.toString(millisUntilFinished);
+        if((count / 60)>9){
+            f = Integer.toString(count / 60);
+        }else{
+            f = "0"+Integer.toString(count / 60);
+        }
+
+        if((count % 60)>9){
+            m = Integer.toString(count % 60);
+        }else{
+            m = "0"+Integer.toString(count % 60);
+        }
+
+        Log.d("millisUntilFinished",muf);
+        Log.d("countdowntimer", "executed at " + new Date().toString());
+        Log.d("countdowntimer", "s=" + f+":"+m);
+        Intent intentT = new Intent("com.example.michaelclock.MY_BROADCAST");
+
+        intentT.putExtra("message", f+":"+m);
+        sendBroadcast(intentT);
+    }
   
         @Override  
         public void onFinish() {  
@@ -77,7 +82,7 @@ public class LongRunningService extends Service {
                 "Notification comes", System. currentTimeMillis());
 	    Intent notificationIntent = new Intent(this, MainActivity.class);
 	    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,notificationIntent, 0);
-	    notification.setLatestEventInfo(this, "This is title", "This is content", pendingIntent);
+	    notification.setLatestEventInfo(this, "NapClock is running...", "Touch to see more", pendingIntent);
 	    startForeground(1, notification);
 	    Log.d("MyService", "onCreate executed");	
     }

@@ -8,92 +8,166 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.3"
-        android:weightSum="1">
-
+        android:layout_height="60dp"
+        android:background="#222222">
         <Button
-            android:layout_weight="0.5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/changeTime_button"
-            android:layout_gravity="center_vertical"/>
-
-        <EditText
-            android:layout_weight="0.25"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/changeCountMin"
-            android:layout_gravity="center_vertical"
-            android:inputType="number"
-            android:hint="minute"
-            android:maxLength="3"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=":"
-            android:id="@+id/textView"
-            android:layout_gravity="center" />
-
-        <EditText
-            android:layout_weight="0.25"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/changeCountSec"
-            android:layout_gravity="center_vertical"
-            android:inputType="number"
-            android:hint="second"
-            android:maxLength="3" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.3"
-        android:weightSum="1">
-
-        <Button
-            android:layout_weight="0.5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Open File"
-            android:id="@+id/openFile"
-            android:layout_gravity="center"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/songInfo"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/title_button"
             android:layout_gravity="center"
-            android:layout_weight="0.5"/>
-
+            android:background="@drawable/sand_glass_white"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:text="NapClock"
+            android:textColor="#ffffff"
+            android:textSize="20sp"
+            />
     </LinearLayout>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.7">
-
-        <TextView android:id="@+id/myTime"
-            android:layout_gravity="center"
+        android:layout_height="0dp"
+        android:weightSum="1"
+        android:layout_weight="1">
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="30dp"
-            android:textSize="90sp"
-            android:textColor="#FF0000"
-            android:textStyle="bold" />
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="110dp">
 
-        <Button
-            android:id="@+id/cancel_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="cancel" />
+            <TextView android:id="@+id/myTime"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="100sp"
+                android:textStyle="bold"
+                android:text="29:59"
+                />
+
+            <Button
+                android:id="@+id/cancel_button"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:background="@drawable/cancel"
+                android:layout_marginTop="40dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:weightSum="1"
+            android:background="#222222"
+            android:layout_gravity="bottom"
+            android:layout_weight="0.5">
+
+            <Button
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/changeTime_button"
+                android:layout_gravity="center"
+                android:background="@drawable/sand_glass_white"/>
+
+            <EditText
+                android:layout_weight="0.25"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/changeCountMin"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:inputType="number"
+                android:hint="Min"
+                android:textColorHint="#88898D"
+                android:textColorHighlight="#ffffff"
+                android:textColor="#ffffff"
+                android:textCursorDrawable="@null"
+                android:background="@android:color/transparent"
+                android:maxLength="3"
+                android:layout_marginLeft="5dp"
+                android:textSize="30sp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:textColor="#ffffff"
+                android:id="@+id/textView"
+                android:layout_gravity="center"
+                android:textSize="30sp"
+                />
+
+            <EditText
+                android:layout_weight="0.25"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/changeCountSec"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:inputType="number"
+                android:hint="Sec"
+                android:textColorHint="#88898D"
+                android:textColorHighlight="#ffffff"
+                android:textColor="#ffffff"
+                android:textCursorDrawable="@null"
+                android:background="@android:color/transparent"
+                android:maxLength="2"
+                android:textSize="30sp"
+                android:layout_marginRight="5dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#88898D">
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:weightSum="1"
+            android:background="#222222"
+            android:layout_gravity="bottom"
+            android:layout_weight="0.5">
+
+            <Button
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/openFile"
+                android:background="@drawable/music_red"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/songInfo"
+                android:textSize="15sp"
+                android:text="00:00"
+                android:textColor="#ffffff"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="30dp"/>
+
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>
