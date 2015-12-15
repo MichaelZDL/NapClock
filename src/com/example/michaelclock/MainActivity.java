@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -23,8 +24,8 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnClickListener {
     //preparation of locking screen
-	DevicePolicyManager mPolicyManager;
-	ComponentName componentName;
+    static DevicePolicyManager mPolicyManager;
+    static ComponentName componentName;
     //for static MyBroadcastReceiver
 	static Activity activity;
 
@@ -32,7 +33,8 @@ public class MainActivity extends Activity implements OnClickListener {
 	public static final int MY_REQUEST_CODE = 10086;
 	public static final int OPEN_FILE_REQUEST_CODE = 10087;
 	public static int SERVICE_OPENED = 0;
-	public static int CLOSEME = 0;
+	public static int CLOSE_ME = 0;
+	public static int lockScreenIn = 4;
     boolean mBound = false;
 	private static int count;
 	private static LongRunningService.ChangeCountBinder changeCountBinder;
@@ -53,7 +55,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
-		timeView = (TextView)findViewById(R.id.myTime);
+        timeView = (TextView)findViewById(R.id.myTime);
 		songInfo = (TextView)findViewById(R.id.songInfo);
 		changeCountTextSec = (EditText)findViewById(R.id.changeCountSec);
 		changeCountTextMin = (EditText)findViewById(R.id.changeCountMin);
@@ -61,21 +63,28 @@ public class MainActivity extends Activity implements OnClickListener {
 		findViewById(R.id.cancel_button).setOnClickListener(this);
 		findViewById(R.id.changeTime_button).setOnClickListener(this);
 		findViewById(R.id.openFile).setOnClickListener(this);
-        //SharedPreference
+
+        //get last CountNum from SharedPreference and show in textView
 		SharedPreferences prefGet = getSharedPreferences("countNum",MODE_PRIVATE);
-		int c = prefGet.getInt("lastCountNum",30*60);
+		int c = prefGet.getInt("lastCountNum", 30 * 60);
+        String tView = "00:00";
         if(c < 60039){
             if((c/60)<10){
                 changeCountTextMin.setText("0"+String.valueOf(c/60));
+                tView = "0"+String.valueOf(c/60);
             }else{
                 changeCountTextMin.setText(String.valueOf(c/60));
+                tView = String.valueOf(c/60);
             }
             if((c%60)<10){
                 changeCountTextSec.setText("0"+String.valueOf(c%60));
+                tView = tView + ":" + "0"+String.valueOf(c%60);
             }else {
                 changeCountTextSec.setText(String.valueOf(c%60));
+                tView = tView + ":" + String.valueOf(c%60);
             }
         }
+        timeView.setText(tView);
         //read last songInfo in SharedPreference
         SharedPreferences prefGetMusic = getSharedPreferences("musicUri", MODE_PRIVATE);
         String uriSoundString = prefGetMusic.getString("alarmingMusicUri", null);
@@ -102,20 +111,17 @@ public class MainActivity extends Activity implements OnClickListener {
         //start countDownTimer and lock screen only in first start this app
 		if(SERVICE_OPENED == 0){
 			SERVICE_OPENED = 1;
-			//for lock screen
-			mPolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-			componentName = new ComponentName(this, MyReceiver.class);
+            final Toast toast = Toast.makeText(activity,
+                    "Screen will be locked in 3s", Toast.LENGTH_LONG);
+            toast.show();
+            Intent intent = new Intent(this, LongRunningService.class);
+            startService(intent);
+            mPolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+            componentName = new ComponentName(this, MyReceiver.class);
             //check lock screen admission
-			if (mPolicyManager.isAdminActive(componentName)){
-
-                Intent intent = new Intent(this, LongRunningService.class);
-				startService(intent);
-                //lock screen
-				mPolicyManager.lockNow();
-
-			} else {
-				getAdminActive();//if no admission, get it
-			}
+            if (!(mPolicyManager.isAdminActive(componentName))){
+                getAdminActive();//if no admission, get it
+            }
 		}
 	}
 	
@@ -130,7 +136,7 @@ public class MainActivity extends Activity implements OnClickListener {
                     unbindService(connection);
                     mBound = false;
                 }
-                CLOSEME = 1;
+                CLOSE_ME = 1;
                 finish();
 		        break;
 			case R.id.openFile:
@@ -177,13 +183,36 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	public static class MyBroadcastReceiver extends BroadcastReceiver {
-		@Override
+        public static boolean closeToast = false;
+        public static boolean lockRunning = false;
+        @Override
 		public void onReceive(Context context, Intent intent) {
 			if(!(intent.getStringExtra("message").equals("Finish MainActivity"))){
-				timeView.setText(intent.getStringExtra("message"));
+                if(lockRunning == false){
+                    timeView.setText(intent.getStringExtra("message"));
+                }
+                if(closeToast == false){
+                    lockScreenIn--;
+                    //hold on textView and delay 2s, against from shaking in textView
+                    if(lockScreenIn == 1){
+                        lockRunning = true;
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                lockRunning = false;
+                            }
+                        }, 2000);
+                    }
+                    if(lockScreenIn == 0){
+                        closeToast = true;
+                        //lock screen
+                        mPolicyManager.lockNow();
+                    }
+                }
 			}else{
-				timeView.setText("Hello");
-				CLOSEME = 1;
+                timeView.setText("Hello");
+				CLOSE_ME = 1;
 				activity.finish();
 			}
 		}
@@ -252,7 +281,7 @@ public class MainActivity extends Activity implements OnClickListener {
     @Override
 	protected void onDestroy() {
 		super.onDestroy();
-		if(CLOSEME == 1){
+		if(CLOSE_ME == 1){
 			android.os.Process.killProcess(android.os.Process.myPid());
 		}
 	}

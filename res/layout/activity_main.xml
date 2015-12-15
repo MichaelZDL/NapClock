@@ -49,7 +49,6 @@
                 android:layout_height="wrap_content"
                 android:textSize="100sp"
                 android:textStyle="bold"
-                android:text="29:59"
                 />
 
             <Button

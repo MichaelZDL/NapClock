@@ -79,18 +79,20 @@ public class LongRunningService extends Service {
     public void onCreate() {
 	    super.onCreate();
 	    Notification notification = new Notification(R.drawable.ic_launcher,
-                "Notification comes", System. currentTimeMillis());
+                "NapClock is running...", System. currentTimeMillis());
 	    Intent notificationIntent = new Intent(this, MainActivity.class);
 	    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,notificationIntent, 0);
 	    notification.setLatestEventInfo(this, "NapClock is running...", "Touch to see more", pendingIntent);
 	    startForeground(1, notification);
 	    Log.d("MyService", "onCreate executed");	
     }
+
     @Override
     public void onDestroy() {
     	mc.cancel();
 	    super.onDestroy();
     }
+
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		//when service first start, we get countNum from SharedPreference we set,
