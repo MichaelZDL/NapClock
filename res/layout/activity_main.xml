@@ -6,26 +6,28 @@
     android:weightSum="1">
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="60dp"
-        android:background="#222222">
-        <Button
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="10dp"
-            android:id="@+id/title_button"
-            android:layout_gravity="center"
-            android:background="@drawable/sand_glass_white"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
-            android:text="NapClock"
-            android:textColor="#ffffff"
-            android:textSize="20sp"
-            />
+        android:background="#222222"
+        android:layout_gravity="center_horizontal"
+        android:gravity="left">
+            <Button
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/title_button"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:background="@drawable/sand_glass_white"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:text="NapClock"
+                android:textColor="#ffffff"
+                android:gravity="center"
+                android:textSize="20sp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -55,7 +57,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
-                android:background="@drawable/cancel"
+                android:background="@drawable/cancel_button"
                 android:layout_marginTop="40dp"/>
         </LinearLayout>
     </LinearLayout>
@@ -80,7 +82,7 @@
                 android:layout_marginLeft="10dp"
                 android:id="@+id/changeTime_button"
                 android:layout_gravity="center"
-                android:background="@drawable/sand_glass_white"/>
+                android:background="@drawable/sandglass_button"/>
 
             <EditText
                 android:layout_weight="0.25"
@@ -151,7 +153,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:id="@+id/openFile"
-                android:background="@drawable/music_red"
+                android:background="@drawable/choose_music_button"
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"/>
 

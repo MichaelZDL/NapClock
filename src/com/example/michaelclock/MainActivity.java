@@ -33,6 +33,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	public static final int OPEN_FILE_REQUEST_CODE = 10087;
 	public static int SERVICE_OPENED = 0;
 	public static int CLOSEME = 0;
+    boolean mBound = false;
 	private static int count;
 	private static LongRunningService.ChangeCountBinder changeCountBinder;
     String  song_title, song_artist;
@@ -109,9 +110,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
                 Intent intent = new Intent(this, LongRunningService.class);
 				startService(intent);
-                Intent bindIntent = new Intent(this, LongRunningService.class);
-				bindService(bindIntent, connection, BIND_AUTO_CREATE);
-				//lock screen
+                //lock screen
 				mPolicyManager.lockNow();
 
 			} else {
@@ -126,10 +125,13 @@ public class MainActivity extends Activity implements OnClickListener {
 		switch(arg0.getId()){
 			case R.id.cancel_button:
 				Intent stopIntent = new Intent(this, LongRunningService.class);
-				unbindService(connection); // unbindService if bound
 				stopService(stopIntent);
-				finish();
-				android.os.Process.killProcess(android.os.Process.myPid());
+                if (mBound) {
+                    unbindService(connection);
+                    mBound = false;
+                }
+                CLOSEME = 1;
+                finish();
 		        break;
 			case R.id.openFile:
 		        Intent intent = new Intent(Intent.ACTION_PICK,
@@ -200,8 +202,6 @@ public class MainActivity extends Activity implements OnClickListener {
         if (requestCode == MY_REQUEST_CODE && resultCode == RESULT_OK){
             Intent intent = new Intent(this, LongRunningService.class);
             startService(intent);
-            Intent bindIntent = new Intent(this, LongRunningService.class);
-            bindService(bindIntent, connection, BIND_AUTO_CREATE);
             mPolicyManager.lockNow();
         } else if (requestCode == MY_REQUEST_CODE){
             getAdminActive();
@@ -231,11 +231,28 @@ public class MainActivity extends Activity implements OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-	@Override
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Bind to LocalService
+        Intent bindIntent = new Intent(this, LongRunningService.class);
+        bindService(bindIntent, connection, BIND_AUTO_CREATE);
+        mBound = true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mBound) {
+            unbindService(connection);
+            mBound=false;
+        }
+    }
+
+    @Override
 	protected void onDestroy() {
 		super.onDestroy();
 		if(CLOSEME == 1){
-			unbindService(connection);
 			android.os.Process.killProcess(android.os.Process.myPid());
 		}
 	}
