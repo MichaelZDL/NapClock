@@ -1,5 +1,7 @@
 package com.example.michaelclock;
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
@@ -12,6 +14,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -58,6 +61,7 @@ public class AlarmRingActivity extends Activity implements OnClickListener {
         vibrator.vibrate(pattern,2);
         
 		findViewById(R.id.close_button).setOnClickListener(this);
+		findViewById(R.id.title_button2).setOnClickListener(this);
 
 	}
 	
@@ -76,6 +80,21 @@ public class AlarmRingActivity extends Activity implements OnClickListener {
 				sendBroadcast(intentT);
 				finish();
 		        break;
+            case R.id.title_button2:
+                final Dialog dialog = new Dialog(this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.about_dialog);
+                Button dialogButton = (Button) dialog.findViewById(R.id.copy_email);
+                dialogButton.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                        clipboard.setText("zhdelong@foxmail.com");
+                        Toast.makeText(AlarmRingActivity.this,"The email is copied to clipboard", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                dialog.show();
+                break;
 			default:break;
 		}
 	}

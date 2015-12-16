@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
+import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -44,7 +45,6 @@ public class MainActivity extends Activity implements OnClickListener {
 	private static int count;
 	private static LongRunningService.ChangeCountBinder changeCountBinder;
     String  song_title, song_artist;
-
 	protected ServiceConnection connection = new ServiceConnection() {
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
@@ -69,7 +69,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		findViewById(R.id.changeTime_button).setOnClickListener(this);
 		findViewById(R.id.openFile).setOnClickListener(this);
 		findViewById(R.id.title_button).setOnClickListener(this);
-
+//		findViewById(R.id.copy_email).setOnClickListener(this);
+//		findViewById(R.id.copy_email2).setOnClickListener(this);
         //get last CountNum from SharedPreference and show in textView
 		SharedPreferences prefGet = getSharedPreferences("countNum",MODE_PRIVATE);
 		int c = prefGet.getInt("lastCountNum", 30 * 60);
@@ -139,23 +140,15 @@ public class MainActivity extends Activity implements OnClickListener {
                 final Dialog dialog = new Dialog(this);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.about_dialog);
-//                dialog.setTitle("Title...");
-
-//                // set the custom dialog components - text, image and button
-//                TextView text = (TextView) dialog.findViewById(R.id.text);
-//                text.setText("Android custom dialog example!");
-//                ImageView image = (ImageView) dialog.findViewById(R.id.image);
-//                image.setImageResource(R.drawable.ic_launcher);
-//
-//                Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
-//                // if button is clicked, close the custom dialog
-//                dialogButton.setOnClickListener(new OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        dialog.dismiss();
-//                    }
-//                });
-
+                Button dialogButton = (Button) dialog.findViewById(R.id.copy_email);
+                dialogButton.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                        clipboard.setText("zhdelong@foxmail.com");
+                        Toast.makeText(MainActivity.this, "The email is copied to clipboard", Toast.LENGTH_SHORT).show();
+                    }
+                });
                 dialog.show();
                 break;
             case R.id.cancel_button:
@@ -219,6 +212,17 @@ public class MainActivity extends Activity implements OnClickListener {
         @Override
 		public void onReceive(Context context, Intent intent) {
 			if(!(intent.getStringExtra("message").equals("Finish MainActivity"))){
+                if(intent.getStringExtra("message").equals("00:02")){
+                    //set timeView 00:01 in 1s
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                timeView.setText("00:01");
+                            }
+                        }, 1000);
+                }
+
                 if(lockRunning == false){
                     timeView.setText(intent.getStringExtra("message"));
                 }
@@ -238,7 +242,7 @@ public class MainActivity extends Activity implements OnClickListener {
                     if(lockScreenIn == 0){
                         closeToast = true;
                         //lock screen
-//                        mPolicyManager.lockNow();
+                        mPolicyManager.lockNow();
                     }
                 }
 			}else{

@@ -15,7 +15,7 @@ android:orientation="vertical" >
             android:id="@+id/title_button2"
             android:layout_gravity="center"
             android:gravity="center"
-            android:background="@drawable/sand_glass_white"/>
+            android:background="@drawable/sandglass_button"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
