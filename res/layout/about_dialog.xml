@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/ic_launcher"
+        android:layout_marginTop="40dp"/>
+    <TextView
+        android:id="@+id/myTime"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textSize="30sp"
+        android:textColor="#999999"
+        android:text="NapClock 1.0"/>
+    <!--<Button-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="40dp"-->
+        <!--android:textSize="20sp"-->
+        <!--android:textColor="#999999"-->
+        <!--android:background="#ffffff"-->
+        <!--android:text="If you have any question or suggestion,-->
+        <!--please feel free to contact me."/>-->
+    <!--<Button-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textSize="20sp"-->
+        <!--android:textColor="#576B95"-->
+        <!--android:background="#ffffff"-->
+        <!--android:text="zhdelong@foxmail.com"/>-->
+
+</LinearLayout>

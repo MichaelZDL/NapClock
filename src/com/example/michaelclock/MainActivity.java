@@ -1,9 +1,12 @@
 package com.example.michaelclock;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -19,6 +22,7 @@ import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
@@ -35,7 +39,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	public static final int OPEN_FILE_REQUEST_CODE = 10087;
 	public static int SERVICE_OPENED = 0;
 	public static int CLOSE_ME = 0;
-	public static int lockScreenIn = 4;
+	public static int lockScreenIn = 2;
     boolean mBound = false;
 	private static int count;
 	private static LongRunningService.ChangeCountBinder changeCountBinder;
@@ -64,6 +68,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		findViewById(R.id.cancel_button).setOnClickListener(this);
 		findViewById(R.id.changeTime_button).setOnClickListener(this);
 		findViewById(R.id.openFile).setOnClickListener(this);
+		findViewById(R.id.title_button).setOnClickListener(this);
 
         //get last CountNum from SharedPreference and show in textView
 		SharedPreferences prefGet = getSharedPreferences("countNum",MODE_PRIVATE);
@@ -113,7 +118,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		if(SERVICE_OPENED == 0){
 			SERVICE_OPENED = 1;
             final Toast toast = Toast.makeText(activity,
-                    "Screen will be locked in 3s", Toast.LENGTH_LONG);
+                    "Screen will be locked in 1s", Toast.LENGTH_LONG);
             toast.show();
             Intent intent = new Intent(this, LongRunningService.class);
             startService(intent);
@@ -130,7 +135,30 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View arg0) {
 		switch(arg0.getId()){
-			case R.id.cancel_button:
+            case R.id.title_button:
+                final Dialog dialog = new Dialog(this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.about_dialog);
+//                dialog.setTitle("Title...");
+
+//                // set the custom dialog components - text, image and button
+//                TextView text = (TextView) dialog.findViewById(R.id.text);
+//                text.setText("Android custom dialog example!");
+//                ImageView image = (ImageView) dialog.findViewById(R.id.image);
+//                image.setImageResource(R.drawable.ic_launcher);
+//
+//                Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+//                // if button is clicked, close the custom dialog
+//                dialogButton.setOnClickListener(new OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        dialog.dismiss();
+//                    }
+//                });
+
+                dialog.show();
+                break;
+            case R.id.cancel_button:
                 Button closeBtn = (Button) findViewById(R.id.cancel_button);
                 closeBtn.setBackgroundResource( R.drawable.cancel_opp);
                 Intent stopIntent = new Intent(this, LongRunningService.class);
@@ -210,7 +238,7 @@ public class MainActivity extends Activity implements OnClickListener {
                     if(lockScreenIn == 0){
                         closeToast = true;
                         //lock screen
-                        mPolicyManager.lockNow();
+//                        mPolicyManager.lockNow();
                     }
                 }
 			}else{
