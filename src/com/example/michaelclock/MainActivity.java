@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
@@ -130,7 +131,9 @@ public class MainActivity extends Activity implements OnClickListener {
 	public void onClick(View arg0) {
 		switch(arg0.getId()){
 			case R.id.cancel_button:
-				Intent stopIntent = new Intent(this, LongRunningService.class);
+                Button closeBtn = (Button) findViewById(R.id.cancel_button);
+                closeBtn.setBackgroundResource( R.drawable.cancel_opp);
+                Intent stopIntent = new Intent(this, LongRunningService.class);
 				stopService(stopIntent);
                 if (mBound) {
                     unbindService(connection);
@@ -221,10 +224,10 @@ public class MainActivity extends Activity implements OnClickListener {
 	private void getAdminActive() {
 		Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
 		intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, componentName);
-		intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
-                "Your admission is required to lock screen for more convenient =]");
 		startActivityForResult(intent, MY_REQUEST_CODE);
-	}
+        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                "Your admission is required to lock screen for more convenient =]");
+    }
 
     @Override
     protected void  onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.widget.Button;
+
 import java.io.IOException;
 
 public class AlarmRingActivity extends Activity implements OnClickListener {
@@ -22,7 +24,9 @@ public class AlarmRingActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 	 	//wake up the screen when alarming
 		setToShowOverLockScreen(getWindow());
-		setContentView(R.layout.activity_alarmring);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.activity_alarmring);
 		//play the music
 		SharedPreferences prefGet = getSharedPreferences("musicUri", MODE_PRIVATE);
 		uriSound = Uri.parse(prefGet.getString("alarmingMusicUri",
@@ -54,12 +58,15 @@ public class AlarmRingActivity extends Activity implements OnClickListener {
         vibrator.vibrate(pattern,2);
         
 		findViewById(R.id.close_button).setOnClickListener(this);
+
 	}
 	
 	@Override
 	 public void onClick(View arg0) {
 		switch(arg0.getId()){
 			case R.id.close_button:
+                Button closeBtn = (Button) findViewById(R.id.close_button);
+                closeBtn.setBackgroundResource( R.drawable.empty_sand_glass_black);
 				mediaPlayer.reset();
 				vibrator.cancel();
 				Intent stopIntent = new Intent(this, LongRunningService.class);

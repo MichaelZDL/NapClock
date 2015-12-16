@@ -65,7 +65,7 @@ public class LongRunningService extends Service {
         @Override  
         public void onFinish() {  
         	Intent intentT = new Intent("com.example.michaelclock.MY_BROADCAST");
-        	intentT.putExtra("message", "Alarm");
+        	intentT.putExtra("message", "00:00");
 			sendBroadcast(intentT);
             //against from killed by Android System, but it seems no use
         	Intent intentNew = new Intent(LongRunningService.this,AlarmRingActivity.class);
