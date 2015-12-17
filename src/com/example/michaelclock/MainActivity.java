@@ -1,13 +1,11 @@
 package com.example.michaelclock;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -23,7 +21,6 @@ import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
@@ -69,8 +66,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		findViewById(R.id.changeTime_button).setOnClickListener(this);
 		findViewById(R.id.openFile).setOnClickListener(this);
 		findViewById(R.id.title_button).setOnClickListener(this);
-//		findViewById(R.id.copy_email).setOnClickListener(this);
-//		findViewById(R.id.copy_email2).setOnClickListener(this);
         //get last CountNum from SharedPreference and show in textView
 		SharedPreferences prefGet = getSharedPreferences("countNum",MODE_PRIVATE);
 		int c = prefGet.getInt("lastCountNum", 30 * 60);
@@ -117,18 +112,20 @@ public class MainActivity extends Activity implements OnClickListener {
         }
         //start countDownTimer and lock screen only in first start this app
 		if(SERVICE_OPENED == 0){
-			SERVICE_OPENED = 1;
-            final Toast toast = Toast.makeText(activity,
-                    "Screen will be locked in 1s", Toast.LENGTH_LONG);
-            toast.show();
-            Intent intent = new Intent(this, LongRunningService.class);
-            startService(intent);
+            //check lock screen admission
             mPolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
             componentName = new ComponentName(this, MyReceiver.class);
-            //check lock screen admission
             if (!(mPolicyManager.isAdminActive(componentName))){
                 getAdminActive();//if no admission, get it
+            }else{
+                SERVICE_OPENED = 1;
+                final Toast toast = Toast.makeText(activity,
+                        "Screen will be locked in 1s", Toast.LENGTH_LONG);
+                toast.show();
+                Intent intent = new Intent(this, LongRunningService.class);
+                startService(intent);
             }
+
 		}
 	}
 	
@@ -246,10 +243,10 @@ public class MainActivity extends Activity implements OnClickListener {
                     }
                 }
 			}else{
-                timeView.setText("Hello");
-				CLOSE_ME = 1;
-				activity.finish();
-			}
+                timeView.setText("See you");
+                CLOSE_ME = 1;
+                activity.finish();
+            }
 		}
 	}
 
@@ -263,12 +260,16 @@ public class MainActivity extends Activity implements OnClickListener {
 
     @Override
     protected void  onActivityResult(int requestCode, int resultCode, Intent data) {
+        SERVICE_OPENED = 1;
         if (requestCode == MY_REQUEST_CODE && resultCode == RESULT_OK){
+            final Toast toast = Toast.makeText(activity,
+                    "Screen will be locked in 1s", Toast.LENGTH_LONG);
+            toast.show();
             Intent intent = new Intent(this, LongRunningService.class);
             startService(intent);
-            mPolicyManager.lockNow();
         } else if (requestCode == MY_REQUEST_CODE){
-            getAdminActive();
+            CLOSE_ME = 1;
+            activity.finish();
         }
         if (requestCode == OPEN_FILE_REQUEST_CODE && resultCode == RESULT_OK){
             Uri uriSound = data.getData();
@@ -298,10 +299,12 @@ public class MainActivity extends Activity implements OnClickListener {
     @Override
     protected void onStart() {
         super.onStart();
-        // Bind to LocalService
-        Intent bindIntent = new Intent(this, LongRunningService.class);
-        bindService(bindIntent, connection, BIND_AUTO_CREATE);
-        mBound = true;
+        if(SERVICE_OPENED == 1){
+            // Bind to LocalService
+            Intent bindIntent = new Intent(this, LongRunningService.class);
+            bindService(bindIntent, connection, BIND_AUTO_CREATE);
+            mBound = true;
+        }
     }
 
     @Override

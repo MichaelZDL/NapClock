@@ -16,6 +16,7 @@ public class LongRunningService extends Service {
 	public String f,m,muf;
 	private MyCountDownTimer mc;
 	private ChangeCountBinder mBinder = new ChangeCountBinder();
+
 	class ChangeCountBinder extends Binder {
 		public void changeCount(int changedCount) {
 			mc.cancel();
@@ -27,6 +28,7 @@ public class LongRunningService extends Service {
 	public IBinder onBind(Intent intent) {
 		return mBinder;
 	}
+
 	class MyCountDownTimer extends CountDownTimer {
 		public MyCountDownTimer(long millisInFuture, long countDownInterval) {
 			super(millisInFuture, countDownInterval);
