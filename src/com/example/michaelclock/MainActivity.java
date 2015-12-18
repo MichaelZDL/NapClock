@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -239,7 +240,7 @@ public class MainActivity extends Activity implements OnClickListener {
                     if(lockScreenIn == 0){
                         closeToast = true;
                         //lock screen
-                        mPolicyManager.lockNow();
+//                        mPolicyManager.lockNow();
                     }
                 }
 			}else{

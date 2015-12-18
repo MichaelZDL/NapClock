@@ -140,18 +140,21 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/openFile"
             android:orientation="horizontal"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:weightSum="1"
-            android:background="#222222"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@drawable/choose_music_button_layout"
             android:layout_gravity="bottom"
             android:layout_weight="0.5">
 
-            <Button
+            <ImageView
+                android:duplicateParentState="true"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:id="@+id/openFile"
                 android:background="@drawable/choose_music_button"
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"/>
