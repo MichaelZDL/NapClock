@@ -84,6 +84,7 @@
                 android:background="@drawable/sandglass_button"/>
 
             <EditText
+                android:imeOptions="actionNext"
                 android:layout_weight="0.25"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -93,13 +94,14 @@
                 android:inputType="number"
                 android:hint="Min"
                 android:textColorHint="#88898D"
-                android:textColorHighlight="#ffffff"
+                android:textColorHighlight="#88898D"
                 android:textColor="#ffffff"
                 android:textCursorDrawable="@null"
                 android:background="@android:color/transparent"
                 android:maxLength="3"
                 android:layout_marginLeft="5dp"
                 android:textSize="30sp"
+                android:selectAllOnFocus="true"
                 />
 
             <TextView
@@ -113,6 +115,7 @@
                 />
 
             <EditText
+                android:imeOptions="actionGo"
                 android:layout_weight="0.25"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -122,13 +125,15 @@
                 android:inputType="number"
                 android:hint="Sec"
                 android:textColorHint="#88898D"
-                android:textColorHighlight="#ffffff"
+                android:textColorHighlight="#88898D"
                 android:textColor="#ffffff"
                 android:textCursorDrawable="@null"
                 android:background="@android:color/transparent"
                 android:maxLength="2"
                 android:textSize="30sp"
-                android:layout_marginRight="5dp"/>
+                android:layout_marginRight="5dp"
+                android:selectAllOnFocus="true"
+                />
 
         </LinearLayout>
 

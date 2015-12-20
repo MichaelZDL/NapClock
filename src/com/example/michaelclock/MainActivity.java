@@ -17,8 +17,10 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -126,8 +128,20 @@ public class MainActivity extends Activity implements OnClickListener {
                 Intent intent = new Intent(this, LongRunningService.class);
                 startService(intent);
             }
-
 		}
+        EditText editText = (EditText) findViewById(R.id.changeCountSec);
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean handled = false;
+                if (actionId == EditorInfo.IME_ACTION_GO) {
+                    Button ChangeTimeButton = (Button) findViewById(R.id.changeTime_button);
+                    ChangeTimeButton.performClick();
+                }
+                return handled;
+            }
+        });
+
 	}
 	
 	//onClick all buttons
