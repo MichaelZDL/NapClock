@@ -101,15 +101,9 @@ public class AlarmRingActivity extends Activity implements OnClickListener {
 	
 	@Override//override back button on phone
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (KeyEvent.KEYCODE_BACK == keyCode){	 
-			mediaPlayer.reset();
-			vibrator.cancel();
-			Intent stopIntent = new Intent(this, LongRunningService.class);
-			stopService(stopIntent);
-			Intent intentT = new Intent("com.example.michaelclock.MY_BROADCAST");
-        	intentT.putExtra("message", "Finish MainActivity");
-			sendBroadcast(intentT);
-			finish();
+		if (KeyEvent.KEYCODE_BACK == keyCode){
+            Button closeBtn = (Button) findViewById(R.id.close_button);
+            closeBtn.performClick();
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);

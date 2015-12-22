@@ -179,7 +179,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		        Intent intent = new Intent(Intent.ACTION_PICK,
                         MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
 				startActivityForResult(intent, OPEN_FILE_REQUEST_CODE);
-				break;
+                break;
 			case R.id.changeTime_button:
                 //close IME when button done
                 InputMethodManager inputManager = (InputMethodManager)
@@ -206,6 +206,7 @@ public class MainActivity extends Activity implements OnClickListener {
                             getSharedPreferences("countNum",MODE_PRIVATE).edit();
                     editor.putInt("lastCountNum", count);
                     editor.commit();
+                    Toast.makeText(MainActivity.this, "New Time has been Saved", Toast.LENGTH_SHORT).show();
 
                     changeCountBinder.changeCount(count);
                     Log.d("changedCountIs", Integer.toString(count));
@@ -213,7 +214,7 @@ public class MainActivity extends Activity implements OnClickListener {
                     Toast.makeText(getApplicationContext(),
                             "Over 10s and under 60000s is required", Toast.LENGTH_LONG).show();
                 }
-				break;
+                break;
 			default:break;
 		}
 	}
@@ -254,11 +255,11 @@ public class MainActivity extends Activity implements OnClickListener {
                     if(lockScreenIn == 0){
                         closeToast = true;
                         //lock screen
-//                        mPolicyManager.lockNow();
+                        mPolicyManager.lockNow();
                     }
                 }
 			}else{
-                timeView.setText("See you");
+                timeView.setText("00:00");
                 CLOSE_ME = 1;
                 activity.finish();
             }
@@ -307,6 +308,7 @@ public class MainActivity extends Activity implements OnClickListener {
             SharedPreferences.Editor editor = getSharedPreferences("musicUri",MODE_PRIVATE).edit();
             editor.putString("alarmingMusicUri", uriSound.toString());
             editor.commit();
+            Toast.makeText(MainActivity.this, "New song has been Saved", Toast.LENGTH_SHORT).show();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

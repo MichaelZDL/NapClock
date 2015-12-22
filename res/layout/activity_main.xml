@@ -15,19 +15,40 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginLeft="10dp"
-                android:id="@+id/title_button"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:background="@drawable/sandglass_button"/>
+                android:background="@drawable/sand_glass_white"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="10dp"
                 android:text="NapClock"
-                android:textColor="#ffffff"
+                android:textColor="@android:color/white"
                 android:gravity="center"
                 android:textSize="20sp"/>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="60dp"
+                android:background="#222222"
+                android:layout_gravity="center_horizontal"
+                android:gravity="left">
+            </LinearLayout>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/title_button"
+                android:layout_gravity="top|center"
+                android:gravity="center"
+                android:text="..."
+                android:textSize="30dp"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:layout_marginRight="10dp"
+                android:background="@android:color/transparent"
+                />
+
     </LinearLayout>
 
     <LinearLayout
@@ -95,7 +116,7 @@
                 android:hint="Min"
                 android:textColorHint="#88898D"
                 android:textColorHighlight="#88898D"
-                android:textColor="#ffffff"
+                android:textColor="@android:color/white"
                 android:textCursorDrawable="@null"
                 android:background="@android:color/transparent"
                 android:maxLength="3"
@@ -108,7 +129,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=":"
-                android:textColor="#ffffff"
+                android:textColor="@android:color/white"
                 android:id="@+id/textView"
                 android:layout_gravity="center"
                 android:textSize="30sp"
@@ -126,7 +147,7 @@
                 android:hint="Sec"
                 android:textColorHint="#88898D"
                 android:textColorHighlight="#88898D"
-                android:textColor="#ffffff"
+                android:textColor="@android:color/white"
                 android:textCursorDrawable="@null"
                 android:background="@android:color/transparent"
                 android:maxLength="2"
@@ -170,7 +191,7 @@
                 android:id="@+id/songInfo"
                 android:textSize="15sp"
                 android:text="00:00"
-                android:textColor="#ffffff"
+                android:textColor="@android:color/white"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:layout_marginLeft="5dp"
