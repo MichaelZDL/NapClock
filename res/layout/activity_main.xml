@@ -36,17 +36,14 @@
                 android:gravity="left">
             </LinearLayout>
             <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:id="@+id/title_button"
-                android:layout_gravity="top|center"
+                android:layout_gravity="center"
                 android:gravity="center"
-                android:text="..."
-                android:textSize="30dp"
                 android:textColor="@android:color/white"
-                android:textStyle="bold"
-                android:layout_marginRight="10dp"
-                android:background="@android:color/transparent"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/dot"
                 />
 
     </LinearLayout>
