@@ -122,11 +122,12 @@ public class MainActivity extends Activity implements OnClickListener {
                 getAdminActive();//if no admission, get it
             }else{
                 SERVICE_OPENED = 1;
-                final Toast toast = Toast.makeText(activity,
-                        "Screen will be locked in 1s", Toast.LENGTH_LONG);
-                toast.show();
+//                final Toast toast = Toast.makeText(activity,
+//                        "Screen will be locked in 1s", Toast.LENGTH_LONG);
+//                toast.show();
                 Intent intent = new Intent(this, LongRunningService.class);
                 startService(intent);
+                mPolicyManager.lockNow();
             }
 		}
         EditText editText = (EditText) findViewById(R.id.changeCountSec);
@@ -220,7 +221,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	public static class MyBroadcastReceiver extends BroadcastReceiver {
-        public static boolean closeToast = false;
+//        public static boolean closeToast = false;
         public static boolean lockRunning = false;
         @Override
 		public void onReceive(Context context, Intent intent) {
@@ -228,37 +229,37 @@ public class MainActivity extends Activity implements OnClickListener {
                 if(intent.getStringExtra("message").equals("00:02")){
                     //set timeView 00:01 in 1s
                         Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                timeView.setText("00:01");
-                            }
-                        }, 1000);
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            timeView.setText("00:01");
+                        }
+                    }, 1000);
                 }
 
                 if(lockRunning == false){
                     timeView.setText(intent.getStringExtra("message"));
                 }
-                if(closeToast == false){
-                    lockScreenIn--;
-                    //hold on textView and delay 2s, against from shaking in textView
-                    if(lockScreenIn == 1){
-                        lockRunning = true;
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                lockRunning = false;
-                            }
-                        }, 2000);
-                    }
-                    if(lockScreenIn == 0){
-                        closeToast = true;
-                        //lock screen
-                        mPolicyManager.lockNow();
-                    }
-                }
 			}else{
+//                if(closeToast == false){
+//                    lockScreenIn--;
+//                    //hold on textView and delay 2s, against from shaking in textView
+//                    if(lockScreenIn == 1){
+//                        lockRunning = true;
+//                        Handler handler = new Handler();
+//                        handler.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                lockRunning = false;
+//                            }
+//                        }, 2000);
+//                    }
+//                    if(lockScreenIn == 1){
+//                        closeToast = true;
+//                        //lock screen
+//                        mPolicyManager.lockNow();
+//                    }
+//                }
                 timeView.setText("00:00");
                 CLOSE_ME = 1;
                 activity.finish();
